@@ -48,7 +48,7 @@ LICENSED WORK OR THE USE OR OTHER DEALINGS IN THE LICENSED WORK.
 *********************************************************/
 
 import { Buffer } from 'buffer';
-import EventEmitter from 'eventemitter3';
+import EventEmitter from 'events';
 import Ticker from '../util/ticker';
 import Sound from '../sound/sound';
 import Util from '../util/util';

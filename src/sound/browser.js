@@ -48,7 +48,7 @@ LICENSED WORK OR THE USE OR OTHER DEALINGS IN THE LICENSED WORK.
 *********************************************************/
 
 import { Buffer } from 'buffer';
-import EventEmitter from 'eventemitter3';
+import EventEmitter from 'events';
 const AudioContext = window.webkitAudioContext || window.AudioContext;
 
 class BrowserSound extends EventEmitter {

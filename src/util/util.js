@@ -47,8 +47,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN ANY WAY CONNECTION WITH THE
 LICENSED WORK OR THE USE OR OTHER DEALINGS IN THE LICENSED WORK.
 *********************************************************/
 
-import EventEmitter from 'eventemitter3';
-import inherits from 'inherits';
+import EventEmitter from "events";
+import inherits from "./inherits_browser";
 
 export default {
   isWeChat() {
@@ -61,7 +61,7 @@ export default {
       this.id = 0;
       this.resolves = [];
 
-      const blob = new Blob([funcStr], { type: 'text/javascript' });
+      const blob = new Blob([funcStr], { type: "text/javascript" });
       this.url = URL.createObjectURL(blob);
       this.worker = new Worker(this.url);
       this.worker.onmessage = message => {
@@ -71,7 +71,7 @@ export default {
           URL.revokeObjectURL(this.url);
           this.worker.terminate();
           this.worker = null;
-        } else if (type == 'event') {
+        } else if (type == "event") {
           this.emit(data.type, data.data);
         } else {
           for (let i = this.resolves.length - 1; i >= 0; i--) {
@@ -84,14 +84,14 @@ export default {
         }
       };
 
-      this.worker.postMessage({ type: 'constructor', id: this.id++, data });
+      this.worker.postMessage({ type: "constructor", id: this.id++, data });
     }
 
     inherits(__Worker__, EventEmitter);
 
     for (let i = 0; i < methods.length; i++) {
       const type = methods[i];
-      __Worker__.prototype[type] = function(data) {
+      __Worker__.prototype[type] = function (data) {
         return new Promise((resolve, reject) => {
           const id = this.id++;
           this.resolves.push({ id, resolve, reject });
@@ -108,5 +108,5 @@ export default {
     return funcStr
       .trim()
       .match(/^function\s*\w*\s*\([\w\s,]*\)\s*{([\w\W]*?)}$/)[1];
-  }
+  },
 };

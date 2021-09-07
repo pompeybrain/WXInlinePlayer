@@ -47,8 +47,8 @@ OTHERWISE, ARISING FROM, OUT OF OR IN ANY WAY CONNECTION WITH THE
 LICENSED WORK OR THE USE OR OTHER DEALINGS IN THE LICENSED WORK.
 *********************************************************/
 
-import { Buffer } from 'buffer';
-import EventEmitter from 'eventemitter3';
+import { Buffer } from "buffer";
+import EventEmitter from "events";
 
 const MAX_REQ_RETRY = 3;
 let supportSharedBuffer = false;
@@ -117,7 +117,7 @@ class ChunkLoader extends EventEmitter {
           if (i >= MAX_REQ_RETRY - 1) {
             if (!this.emitted) {
               this.emitted = true;
-              this.emit('loadError', e);
+              this.emit("loadError", e);
             }
             throw e;
           } else {
@@ -132,18 +132,18 @@ class ChunkLoader extends EventEmitter {
     return new Promise((resolve, reject) => {
       const endIndex = this.startIndex + this.chunkSize;
       this.xhr = new XMLHttpRequest();
-      this.xhr.open('GET', this.url);
-      this.xhr.responseType = 'arraybuffer';
+      this.xhr.open("GET", this.url);
+      this.xhr.responseType = "arraybuffer";
       this.xhr.setRequestHeader(
-        'Range',
+        "Range",
         `bytes=${this.startIndex}-${endIndex}`
       );
 
       this.xhr.onerror = e => {
         reject({
           status: -1,
-          statusText: 'unknown error',
-          detail: e
+          statusText: "unknown error",
+          detail: e,
         });
       };
 
@@ -152,7 +152,7 @@ class ChunkLoader extends EventEmitter {
           if (this.xhr.status >= 200 && this.xhr.status <= 299) {
             if (!this.emitted) {
               this.emitted = true;
-              this.emit('loadSuccess');
+              this.emit("loadSuccess");
             }
             this.startIndex = endIndex + 1;
             resolve(new Uint8Array(this.xhr.response));
@@ -163,7 +163,7 @@ class ChunkLoader extends EventEmitter {
               detail: String.fromCharCode.apply(
                 null,
                 new Uint8Array(this.xhr.response)
-              )
+              ),
             });
           }
         }
